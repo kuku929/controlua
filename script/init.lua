@@ -5,6 +5,7 @@
 require("../base/globalschecker").enable()
 require "../base/base"
 require "../base/math"
+local Movement = require("../movement/movement")
 
 -- Add entrypoints for selection in Ra
 local Entrypoints = require "../base/entrypoints"
@@ -18,10 +19,10 @@ local World = require "../base/world"
 local vis = require "../base/vis"
 -- For adding data to the plotter
 local plot = require "../base/plot"
-
+--[[ 
 local directionChangeTime
 local spline =  { { t_start = 0, t_end = math.huge,
-					x = { a0 = 0, a1 = 0.5, a2 = 0, a3 = 0 },
+					x = { a0 = 0, a1 = 0, a2 = 0, a3 = 0 },
 					y = { a0 = 0, a1 = 0, a2 = 0, a3 = 0 },
 					phi = { a0 = 0, a1 = 0, a2 = 0, a3 = 0 }
 				} }
@@ -55,31 +56,90 @@ local main = function()
 	debug.set("speed", World.Ball.speed)
 	debug.pop()
 
-	-- Time is in seconds
-	-- if World.Time - directionChangeTime > 2 then
-	-- 	directionChangeTime = World.Time
-	-- 	spline[1].x.a1 = -spline[1].x.a1
-	-- end
-	-- One of the methods to get a team's robots
+-- 	plot.aggregate("Ball.speed", World.Ball.speed.x)
 
-	if robot then
-		if robot:hasBall(World.Ball, depth) then
-			-- print("shooting")
-			robot:shoot(5)
-		else 
-			-- print("moving")
-			local ballpos = World.Ball.pos
-			local diff = robot.pos - ballpos 
-			spline[1].x.a1 = diff.x
-			spline[1].y.a1 = diff.y
-			if robot then
-				spline[1].x.a0 = robot.pos.x
-				spline[1].y.a0 = robot.pos.y
-				robot:setControllerInput({ spline = spline })
+-- 	-- Time is in seconds
+-- 	-- if World.Time - directionChangeTime > 2 then
+-- 	-- 	directionChangeTime = World.Time
+-- 	-- 	spline[1].x.a1 = -spline[1].x.a1
+-- 	-- end
+-- 	-- One of the methods to get a team's robots
+
+-- 	if robot then
+-- 		if robot:hasBall(World.Ball, depth) then
+-- 			-- print("shooting")
+-- 			robot:shoot(5)
+-- 		else 
+-- 			-- print("moving")
+-- 			local ballpos = World.Ball.pos
+-- 			local diff = robot.pos - ballpos 
+-- 			spline[1].x.a1 = diff.x
+-- 			spline[1].y.a1 = diff.y
+-- 			if robot then
+-- 				spline[1].x.a0 = robot.pos.x
+-- 				spline[1].y.a0 = robot.pos.y
+-- 				robot:setControllerInput({ spline = spline })
+-- 			end
+-- 		end
+-- 	end
+	-- spline[1].x.a2 = robot.acceleration.x;
+	-- spline[1].x.a1 = robot.speed.x;
+	-- spline[1].x.a0 = robot.pos.x;
+	-- spline[1].y.a0 = robot.pos.y;
+	robot:setControllerInput({ spline = spline })
+end ]]
+
+local directionChangeTime
+loca number_of_robots = 6
+Movement:new(number_of_robots)
+local frameCount = 0
+Movement:set_velocity(0,{1,0,0})
+
+local main = function()
+	if frameCount % 100 == 0 then
+		-- Use log() to output data in Ra's log widget
+		log("Strategy run")
+	end
+	frameCount = frameCount + 1
+	-- for hasBall
+	local depth = 0.1
+
+	local robots = World.FriendlyRobotsById
+
+	if World.Time - directionChangeTime > 2 then
+		directionChangeTime = World.Time
+		Movement.splines_[0].x.a1 = -Movement.splines_[0].x.a1
+	end
+
+	-- Add information to the debug tree
+	-- Sub-trees can be created using path-like key names or with debug.push()
+	debug.set("Ball/pos", World.Ball.pos)
+	debug.push("Ball")
+	debug.set("speed", World.Ball.speed)
+	debug.pop()
+
+	for i=0, number_of_robots-1:
+		robot = World.FriendlyRobotsById[i]
+		if robot then
+			if robot:hasBall(World.Ball, depth) then
+				-- print("shooting")
+				robot:shoot(5)
+			else 
+				-- print("moving")
+				local ballpos = World.Ball.pos
+				local diff = robot.pos - ballpos 
+				Movement.splines_[i].x.a1 = diff.x
+				Movement.splines_[i].y.a1 = diff.y
+				
+				Movement.splines_[i].x.a0 = robot.pos.x
+				Movement.splines_[i].y.a0 = robot.pos.y
+				robot:setControllerInput({ spline = Movement.splines_[i] })
+
 			end
 		end
 	end
 end
+
 
 Entrypoints.add("Demo", main)
 -- You can also create a hierarchy of entrypoints
