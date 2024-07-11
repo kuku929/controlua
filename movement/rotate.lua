@@ -16,19 +16,19 @@ function Rotator:new(o, robot_id, spline)
 end
 
 function Rotator:set_position(pos)
-    self.splines_[id_].phi.a0 = pos  
+    self.splines_[self.id_].phi.a0 = pos  
 end
 
 function Rotator:set_velocity(omega)
-    self.splines_[id_].phi.a1 = omega 
+    self.splines_[self.id_].phi.a1 = omega 
 end
 
 function Rotator:set_acceleration(id_, alpha)
-    self.splines_[id_].phi.a2 = alpha 
+    self.splines_[self.id_].phi.a2 = alpha 
 end
 
 function Rotator:set_jerk(j)
-    self.splines_[id_].phi.a3 = j
+    self.splines_[self.id_].phi.a3 = j
 end
 
 return Rotator

@@ -90,10 +90,10 @@ local main = function()
 end ]]
 
 local directionChangeTime
-loca number_of_robots = 6
+local number_of_robots = 6
 Movement:new(number_of_robots)
 local frameCount = 0
-Movement:set_velocity(0,{1,0,0})
+
 
 local main = function()
 	if frameCount % 100 == 0 then
@@ -104,12 +104,17 @@ local main = function()
 	-- for hasBall
 	local depth = 0.1
 
-	local robots = World.FriendlyRobotsById
+	local robot = World.FriendlyRobotsById[0]
 
-	if World.Time - directionChangeTime > 2 then
+	Movement:set_velocity(robot, {x=1, y=0, z=0})
+	Movement:set_position(robot)
+	robot:setControllerInput({ spline = Movement.splines_})
+
+
+	--[[ if World.Time - directionChangeTime > 2 then
 		directionChangeTime = World.Time
 		Movement.splines_[0].x.a1 = -Movement.splines_[0].x.a1
-	end
+	end ]]
 
 	-- Add information to the debug tree
 	-- Sub-trees can be created using path-like key names or with debug.push()
@@ -118,8 +123,8 @@ local main = function()
 	debug.set("speed", World.Ball.speed)
 	debug.pop()
 
-	for i=0, number_of_robots-1:
-		robot = World.FriendlyRobotsById[i]
+	--[[ for i=0, number_of_robots-1 do
+		local robot = World.FriendlyRobotsById[i]
 		if robot then
 			if robot:hasBall(World.Ball, depth) then
 				-- print("shooting")
@@ -127,7 +132,8 @@ local main = function()
 			else 
 				-- print("moving")
 				local ballpos = World.Ball.pos
-				local diff = robot.pos - ballpos 
+				local diff = robot.pos - ballpos
+				Movement:set_velocity()
 				Movement.splines_[i].x.a1 = diff.x
 				Movement.splines_[i].y.a1 = diff.y
 				
@@ -137,7 +143,8 @@ local main = function()
 
 			end
 		end
-	end
+	end ]]
+
 end
 
 

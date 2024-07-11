@@ -1,6 +1,6 @@
 local amun = amun
-local Translator = require('./translate')
-local Rotator = require('./rotate')
+local Translator = require('translate')
+local Rotator = require('rotate')
 Movement = {splines_ = {}, translate = {}, rotate = {}}
 
 function Movement:new(number_of_robots)
@@ -17,9 +17,8 @@ function Movement:new(number_of_robots)
 end
 
 function Movement:set_position(robot, pos)
-    if robot.id > #splines_ then
+    if robot.id > #self.splines_ then
         log("movement : unknown robot")
-    end
     else
         pos = pos or {x=robot.pos.x, y=robot.pos.y, phi=robot.dir}
         Translator[robot.id].set_position({pos.x, pos.y})
@@ -28,9 +27,8 @@ function Movement:set_position(robot, pos)
 end
 
 function Movement:set_velocity(robot, v)
-    if id > #splines_ then
+    if robot.id > #self.splines_ then
         log("movement : unknown robot")
-    end
     else
         v = v or {x=robot.speed.x, y=robot.speed.y, phi=robot.angularSpeed}
         Translator[robot.id].set_velocity({v.x, v.y})
@@ -39,9 +37,8 @@ function Movement:set_velocity(robot, v)
 end
     
 function Movement:set_acceleration(robot, a)
-    if id > #splines_ then
+    if robot.id > #self.splines_ then
         log("movement : unknown robot")
-    end
     else
         Translator[robot.id].set_acceleration({a.x, a.y})
         Rotator[robot.id].set_acceleration(a.phi)
@@ -49,19 +46,12 @@ function Movement:set_acceleration(robot, a)
 end
     
 function Movement:set_jerk(robot, j)
-    if id > #splines_ then
+    if robot.id > #self.splines_ then
         log("movement : unknown robot")
-    end
     else
         Translator[robot.id].set_jerk({j.x, j.y})
         Rotator[robot.id].set_jerk(j.phi)
     end
 end
- 
-        
 
-
-
-
-        
-        
+return Movement

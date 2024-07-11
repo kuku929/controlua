@@ -17,8 +17,8 @@ function Translator:new(o, robot_id, spline)
 end
 
 function Translator:set_position(pos)
-    self.spline_[id_].x.a0 = pos.x
-    self.spline_[id_].y.a0 = pos.y
+    self.spline_[self.id_].x.a0 = pos.x
+    self.spline_[self.id_].y.a0 = pos.y
 end
 
 
@@ -28,19 +28,19 @@ function Translator:set_velocity(v)
     -- end
     -- local robot_vel =  {robot.speed.x, robot.speed.y, robot.angularSpeed}
     -- v = v or robot_vel
-    self.spline_[id_].x.a1 = v.x
-    self.spline_[id_].y.a1 = v.y
+    self.spline_[self.id_].x.a1 = v.x
+    self.spline_[self.id_].y.a1 = v.y
 end
 
 function Translator:set_acceleration(a)
-    self.spline_[id_].x.a2 = a.x
-    self.spline_[id_].y.a2 = a.y
+    self.spline_[self.id_].x.a2 = a.x
+    self.spline_[self.id_].y.a2 = a.y
 end
 
 
 function Translator:set_jerk(j)
-    self.spline_[id_].x.a3 = j.x
-    self.spline_[id_].y.a3 = j.y
+    self.spline_[self.id_].x.a3 = j.x
+    self.spline_[self.id_].y.a3 = j.y
 end
 
 return Translator
