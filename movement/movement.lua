@@ -17,7 +17,7 @@ function Movement:new(number_of_robots)
 end
 
 function Movement:set_position(robot, pos)
-    if id > #splines_ then
+    if robot.id > #splines_ then
         log("movement : unknown robot")
     end
     else
